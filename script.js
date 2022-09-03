@@ -4,7 +4,6 @@
 // @grant none
 // ==/UserScript==
 
-
 console.log(`Eios customiser. Current location = ${location}`);
 console.log(`Is MRSU Eios site = ${location.toString().includes("p.mrsu.ru")}`);
 
@@ -132,10 +131,15 @@ class EiosCustomiser{
       </div>
         `;
     	$('form').append(htmlcode);
-      let timetableURL = `https://raw.githubusercontent.com/relativemodder/eios-114b-grp-timetable/main/timetable.json`;
+      let dt = new Date();
+      let ms = dt.getMilliseconds();
+          
+      let timetableURL = `https://raw.githubusercontent.com/relativemodder/eios-114b-grp-timetable/main/timetable.json?${ms}`;
       let tick = document.location.search.split("=")[1];
       
-      let timetable = loadJSON(timetableURL)[tick];
+      let allTimetable = loadJSON(timetableURL);
+      console.log(allTimetable);
+      let timetable = allTimetable[tick];
       
       timetable.forEach((elem, i, arr) => {
         console.log(elem);
