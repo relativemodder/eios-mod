@@ -1,0 +1,94 @@
+body{
+  font-family: Montserrat;
+}
+
+  *::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #f2f3f5;
+    border-radius: 10px;
+    border: 3px solid #ffffff;
+  }
+.hidden-print{
+  display: none;
+}
+img[src='/Content/img/noavatar.png']{
+  opacity: 0.0;
+}
+.img-thumbnail{
+  background-color: #f2f3f5;
+}
+#Btn_loc_ru{
+  display: none;
+}
+#Btn_loc_en{
+  display: none;
+}
+.navbar-brand::hover{
+  color: #337ab7;
+}
+.navbar-t::hover{
+  color: #337ab7;
+}
+dt{
+  margin-top: 10px;
+  text-align: justify !important;
+}
+dd{
+  margin-top: 10px;
+  text-align: justify !important;
+}
+.modhint{
+  font-size: 11pt;
+}
+h1, h2{
+  text-align: center;
+}
+#mydiv {
+      position: absolute;
+  right: 0px;
+  top: 90%;
+  width: 500px;
+      z-index: 9;
+      background-color: #f1f1f1;
+      border: 1px solid #d3d3d3;
+      text-align: center;
+    }
+
+    #mydivheader {
+      padding: 10px;
+      cursor: move;
+      z-index: 10;
+      background-color: #2196F3;
+      color: #fff;
+    }
+iframe{
+  display: none;
+  width: 100%;
+  height: 500px;
+}
+.expand{
+  color: white;
+  font-size: 25pt;
+  margin: 250px;
+  cursor: pointer;
+}
+.customTimetable{
+  width: 90%;
+  height: 570px;
+}
+.thead-tt{
+  width: 700px;
+}
+.tbody-tt{
+  width: 700px;
+}
+tr{
+  
+}
