@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
 
+
 body{
   font-family: Montserrat;
 }
@@ -20,6 +21,8 @@ body{
 .hidden-print{
   display: none;
 }
+
+
 img[src='/Content/img/noavatar.png']{
   opacity: 0.0;
 }
@@ -105,4 +108,39 @@ iframe{
   box-shadow: 0px 3px 21px 2px rgba(34, 60, 80, 0.2);
   display: none;
   overflow-y: scroll;
+}
+
+.switch-btn {
+  scale: 0.6;
+  vertical-align: middle;
+  display: inline-block;
+  width: 72px; /* ширина */
+  height: 38px; /* высота */
+  border-radius: 19px; /* радиус скругления */
+  background: #bfbfbf; /* цвет фона */
+  z-index: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition-duration: 300ms; /* анимация */
+}
+.switch-btn::after {
+  content: "";
+  height: 32px; /* высота кнопки */
+  width: 32px; /* ширина кнопки */
+  border-radius: 17px;
+  background: #fff; /* цвет кнопки */
+  top: 3px; /* положение кнопки по вертикали относительно основы */
+  left: 3px; /* положение кнопки по горизонтали относительно основы */
+  transition-duration: 300ms; /* анимация */
+  position: absolute;
+  z-index: 1;
+}
+.switch-on {
+  background: #3ba4ff;
+}
+.switch-on::after {
+  left: 37px;
 }
