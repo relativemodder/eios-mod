@@ -4,6 +4,7 @@
 // @grant none
 // ==/UserScript==
 
+
 console.log(`Eios customiser. Current location = ${location}`);
 console.log(`Is MRSU Eios site = ${location.toString().includes("p.mrsu.ru")}`);
 
