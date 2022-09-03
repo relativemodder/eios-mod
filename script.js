@@ -92,6 +92,96 @@ class EiosCustomiser{
     setTimeout(() => this.urlifyContainers(), 200);
     setTimeout(() => this.addDinoGame(), 200);
     setTimeout(() => this.addCustomTimetable(), 200);
+    setTimeout(() => this.customiseLeftSide(), 200);
+    setTimeout(() => this.customiseModal(), 200);
+  }
+  
+  tryGetOption(k){
+    let defaults = {
+      "dino": false,
+      "hiddenlis": "[]"
+    };
+    
+    return localStorage[k] != undefined ? localStorage[k] : defaults[k]
+  }
+  
+  openModal(){
+    $('.modalwindow').show("fast");
+  }
+  saveAndCloseModal(){
+    
+    // Сериализуем настройки
+    // Настройки разделов
+    
+    let hids = [];
+    
+    $("input", $(".hiddens")).each(function(i, element, val){
+        element = $(element);
+      	let checked = element.is(':checked');
+      	if (checked)
+      		hids.push(String(i));
+    });
+    
+    hids = JSON.stringify(hids);
+    
+    localStorage.setItem("hiddenlis", hids);
+    
+    $('.modalwindow').hide("fast");
+    setTimeout(() => {
+      location=location
+    }, 300);
+  }
+  
+  customiseModal(){
+    let modalHtml = `
+    <div class="modalwindow">
+    	<center><h1>Настройки мода для ЭИОС</h1> <a onclick="eios.saveAndCloseModal()" style="cursor: pointer;">Закрыть, сохранить и перезагрузить</a></center>
+        <li role="separator" class="divider">Невидимость элементов из левого списка (beta)</li>
+        <ul class="nav navmenu-nav hiddens">
+        	<li><a><input type="checkbox" value="off"> Сообщения</a></li>
+        	<li><a><input type="checkbox"> События</a></li>
+        	<li><a><input type="checkbox"> Новости и обновления</a></li>
+        	<li><a><input type="checkbox"> Портфолио</a></li>
+        	<li><a><input type="checkbox"> Моя индивидуальная траектория</a></li>
+        	<li><a><input type="checkbox"> Рабочие программы</a></li>
+        	<li><a><input type="checkbox"> Успеваемость</a></li>
+        	<li><a><input type="checkbox"> Расписание</a></li>
+        	<li><a><input type="checkbox"> Общение</a></li>
+        	<li><a><input type="checkbox"> Трудоустройство</a></li>
+        	<li><a><input type="checkbox"> Документы</a></li>
+        	<li><a><input type="checkbox"> Социальная поддержка</a></li>
+        	<li><a><input type="checkbox"> Тесты</a></li>
+        	<li><a><input type="checkbox"> Онлайн-встречи</a></li>
+        	<li><a><input type="checkbox"> Опросы</a></li>
+        	<li><a><input type="checkbox"> Мои документы</a></li>
+        	<li><a><input type="checkbox"> Удалённая работа</a></li>
+        	<li><a><input type="checkbox"> Справки / заявки</a></li>
+        	<li><a><input type="checkbox"> Подача документов</a></li>
+        	<li><a><input type="checkbox"> Задолженности</a></li>
+        	<li><a><input type="checkbox"> Руководство пользователя ЭИОС</a></li>
+        	<li><a><input type="checkbox"> Оплата</a></li>
+        	<li><a><input type="checkbox"> Ссылки на внешние ресурсы</a></li>
+        </ul>
+    </div>
+    `;
+    $('body').append(modalHtml);
+    
+    let hiddenlis = JSON.parse(this.tryGetOption("hiddenlis"));
+    console.log(hiddenlis);
+    hiddenlis.forEach((elem, i, arr) => {
+      $($("input", $(".hiddens"))[Number(elem)]).prop('checked', true);
+    });
+  }
+  customiseLeftSide(){
+    $('.navmenu-nav').append(`<li role="separator" class="divider"></li>`);
+    $('.navmenu-nav').append(`<li><a href="javascript:void(0)" onclick="eios.openModal()">Настройки модификации</a></li>`);
+    
+    let hiddenlis = JSON.parse(this.tryGetOption("hiddenlis"));
+    console.log(hiddenlis);
+    hiddenlis.forEach((elem, i, arr) => {
+      $($("nav").children().find('a').not('divider')[Number(elem)]).hide();
+      $($("input").children().find('hiddens')[Number(elem)]).prop('checked', true);
+    });
   }
   customiseHeader(){
     $('.navbar-t').html("ЭИОС <span class=\"modhint\">(модификация)</span>");
@@ -110,6 +200,9 @@ class EiosCustomiser{
   
   addCustomTimetable(){
     if(location.toString().includes("/Learning/TimeTable/TimeTable")){
+      
+      $('#MainContent_hrefExport').prop('outerHTML', (`<br>${$('#MainContent_hrefExport').prop('outerHTML')}`));
+      
       	let htmlcode = `
         <br><br>
         <div class="customTimetable">
@@ -130,12 +223,14 @@ class EiosCustomiser{
                 </table>
       </div>
         `;
+      if(!location.toString().includes("?view=week"))
     	$('form').append(htmlcode);
       let dt = new Date();
       let ms = dt.getMilliseconds();
           
       let timetableURL = `https://raw.githubusercontent.com/relativemodder/eios-114b-grp-timetable/main/timetable.json?${ms}`;
-      let tick = document.location.search.split("=")[1];
+      let tick = $("a", $(".active", $(".pagination")[0]))[0]["href"].split("?tick=")[1];
+      
       
       let allTimetable = loadJSON(timetableURL);
       console.log(allTimetable);
@@ -158,6 +253,8 @@ class EiosCustomiser{
   }
   
   addDinoGame(){
+    
+    
     let htmlcode = `
     <div id="mydiv">
       <!-- Включите заголовок DIV с тем же именем, что и перетаскиваемый DIV, а затем "header" -->
@@ -165,7 +262,10 @@ class EiosCustomiser{
       <iframe src="https://8nykp.csb.app/" class="dinogame"></iframe>
     </div>`;
     
-    $('body').append(htmlcode);
+    if(this.tryGetOption("dino") == 'true'){
+      	console.log("Adding Dino");
+    	$('body').append(htmlcode);
+    }
     
     $('.expand').click(function(){
       $('.dinogame').toggle("slow");
