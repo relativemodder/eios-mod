@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name New Script
+// @name EIOS mod
 // @namespace OrangeMonkey Scripts
 // @grant none
 // ==/UserScript==
@@ -85,8 +85,18 @@ class EiosCustomiser{
       // return text.replace(urlRegex, '<a href="$1">$1</a>')
   }
   
+  customiseHead(){
+    let dt = new Date();
+    let ms = dt.getMilliseconds();
+    let stylish = loadTextFileAjaxSync(`https://raw.githubusercontent.com/relativemodder/eios-mod/main/style.css?cache=${ms}`, "text/plain");
+    $('body').append(`<style>
+    ${stylish}
+    </style>`);
+  }
+  
   customise(){
     console.log("Beginning...");
+    setTimeout(() => this.customiseHead(), 20);
     setTimeout(() => this.customiseHeader(), 200);
     setTimeout(() => this.customiseAccountManage(), 200);
     setTimeout(() => this.urlifyContainers(), 200);
@@ -94,12 +104,22 @@ class EiosCustomiser{
     setTimeout(() => this.addCustomTimetable(), 200);
     setTimeout(() => this.customiseLeftSide(), 200);
     setTimeout(() => this.customiseModal(), 200);
+    setTimeout(() => this.customiseEventsPage(), 200);
+    setTimeout(() => this.initSwitches(), 200);
+  }
+  
+  initSwitches(){
+    $('.switch-btn').click(function(){
+      $(this).toggleClass('switch-on');
+    });
   }
   
   tryGetOption(k){
     let defaults = {
       "dino": false,
-      "hiddenlis": "[]"
+      "hiddenlis": "[]",
+      "timetableURL": "yet",
+      "customTT": 'false'
     };
     
     return localStorage[k] != undefined ? localStorage[k] : defaults[k]
@@ -108,6 +128,12 @@ class EiosCustomiser{
   openModal(){
     $('.modalwindow').show("fast");
   }
+  openModalAndScroll(selector){
+    this.openModal();
+    $('.modalwindow').animate({
+     scrollTop: $(`${selector}`).offset().top // класс объекта к которому приезжаем
+     }, 1000);
+  }
   saveAndCloseModal(){
     
     // Сериализуем настройки
@@ -115,16 +141,21 @@ class EiosCustomiser{
     
     let hids = [];
     
-    $("input", $(".hiddens")).each(function(i, element, val){
+    $(".switch-btn", $(".hiddens")).each(function(i, element, val){
         element = $(element);
-      	let checked = element.is(':checked');
+      	let checked = element.hasClass("switch-on");
       	if (checked)
       		hids.push(String(i));
     });
     
     hids = JSON.stringify(hids);
-    
     localStorage.setItem("hiddenlis", hids);
+    
+    let customTTURL = $('#customTimetableURLField').val() != "" ? $('#customTimetableURLField').val() : "yet";
+    localStorage.setItem("timetableURL", customTTURL);
+    
+    let enableCustomTT = $('#enableCustomTT').hasClass("switch-on");
+    localStorage.setItem("customTT", enableCustomTT);
     
     $('.modalwindow').hide("fast");
     setTimeout(() => {
@@ -136,31 +167,38 @@ class EiosCustomiser{
     let modalHtml = `
     <div class="modalwindow">
     	<center><h1>Настройки мода для ЭИОС</h1> <a onclick="eios.saveAndCloseModal()" style="cursor: pointer;">Закрыть, сохранить и перезагрузить</a></center>
+        <br><br>
         <li role="separator" class="divider">Невидимость элементов из левого списка (beta)</li>
         <ul class="nav navmenu-nav hiddens">
-        	<li><a><input type="checkbox" value="off"> Сообщения</a></li>
-        	<li><a><input type="checkbox"> События</a></li>
-        	<li><a><input type="checkbox"> Новости и обновления</a></li>
-        	<li><a><input type="checkbox"> Портфолио</a></li>
-        	<li><a><input type="checkbox"> Моя индивидуальная траектория</a></li>
-        	<li><a><input type="checkbox"> Рабочие программы</a></li>
-        	<li><a><input type="checkbox"> Успеваемость</a></li>
-        	<li><a><input type="checkbox"> Расписание</a></li>
-        	<li><a><input type="checkbox"> Общение</a></li>
-        	<li><a><input type="checkbox"> Трудоустройство</a></li>
-        	<li><a><input type="checkbox"> Документы</a></li>
-        	<li><a><input type="checkbox"> Социальная поддержка</a></li>
-        	<li><a><input type="checkbox"> Тесты</a></li>
-        	<li><a><input type="checkbox"> Онлайн-встречи</a></li>
-        	<li><a><input type="checkbox"> Опросы</a></li>
-        	<li><a><input type="checkbox"> Мои документы</a></li>
-        	<li><a><input type="checkbox"> Удалённая работа</a></li>
-        	<li><a><input type="checkbox"> Справки / заявки</a></li>
-        	<li><a><input type="checkbox"> Подача документов</a></li>
-        	<li><a><input type="checkbox"> Задолженности</a></li>
-        	<li><a><input type="checkbox"> Руководство пользователя ЭИОС</a></li>
-        	<li><a><input type="checkbox"> Оплата</a></li>
-        	<li><a><input type="checkbox"> Ссылки на внешние ресурсы</a></li>
+        	<li><a><div class="switch-btn"></div> Сообщения</a></li>
+        	<li><a><div class="switch-btn"></div> События</a></li>
+        	<li><a><div class="switch-btn"></div> Новости и обновления</a></li>
+        	<li><a><div class="switch-btn"></div> Портфолио</a></li>
+        	<li><a><div class="switch-btn"></div> Моя индивидуальная траектория</a></li>
+        	<li><a><div class="switch-btn"></div> Рабочие программы</a></li>
+        	<li><a><div class="switch-btn"></div> Успеваемость</a></li>
+        	<li><a><div class="switch-btn"></div> Расписание</a></li>
+        	<li><a><div class="switch-btn"></div> Общение</a></li>
+        	<li><a><div class="switch-btn"></div> Трудоустройство</a></li>
+        	<li><a><div class="switch-btn"></div> Документы</a></li>
+        	<li><a><div class="switch-btn"></div> Социальная поддержка</a></li>
+        	<li><a><div class="switch-btn"></div> Тесты</a></li>
+        	<li><a><div class="switch-btn"></div> Онлайн-встречи</a></li>
+        	<li><a><div class="switch-btn"></div> Опросы</a></li>
+        	<li><a><div class="switch-btn"></div> Мои документы</a></li>
+        	<li><a><div class="switch-btn"></div> Удалённая работа</a></li>
+        	<li><a><div class="switch-btn"></div> Справки / заявки</a></li>
+        	<li><a><div class="switch-btn"></div> Подача документов</a></li>
+        	<li><a><div class="switch-btn"></div> Задолженности</a></li>
+        	<li><a><div class="switch-btn"></div> Руководство пользователя ЭИОС</a></li>
+        	<li><a><div class="switch-btn"></div> Оплата</a></li>
+        	<li><a><div class="switch-btn"></div> Ссылки на внешние ресурсы</a></li>
+        </ul>
+        <li role="separator" class="divider">Задать URL для JSON-файла с расписанием</li>
+        <br>
+        <ul class="nav navmenu-nav" id="setCustomTimetableURL">
+        	<li><a><div class="switch-btn" id="enableCustomTT"></div> Включить кастомное расписание</a></li>
+        	<li><a>URL JSON расписания: <input type="text" class="btn btn-default" placeholder="URL..." id="customTimetableURLField" style="width: 50%;"></a></li>
         </ul>
     </div>
     `;
@@ -169,8 +207,14 @@ class EiosCustomiser{
     let hiddenlis = JSON.parse(this.tryGetOption("hiddenlis"));
     console.log(hiddenlis);
     hiddenlis.forEach((elem, i, arr) => {
-      $($("input", $(".hiddens"))[Number(elem)]).prop('checked', true);
+      $($(".switch-btn", $(".hiddens"))[Number(elem)]).addClass("switch-on");
     });
+    
+    
+    $('#customTimetableURLField').val(this.tryGetOption("timetableURL") == "yet" ? null : this.tryGetOption("timetableURL"));
+    
+    if(this.tryGetOption("customTT") != 'false')
+      $('#enableCustomTT').addClass("switch-on");
   }
   customiseLeftSide(){
     $('.navmenu-nav').append(`<li role="separator" class="divider"></li>`);
@@ -194,12 +238,20 @@ class EiosCustomiser{
       $('#externalLoginsForm').hide();
     }
   }
+  customiseEventsPage(){
+    if(location.toString().includes("/Events/Events")){
+      $('#MainContent_Button_MyEventsCab').prop('outerHTML', $('#MainContent_Button_MyEventsCab').prop('outerHTML') + "<br><br>");
+    }
+  }
   urlifyContainers(){
     $('.panel-body').html(this.urlify($('.panel-body').html() !== null ? $('.panel-body').html() : ""));
   }
   
   addCustomTimetable(){
     if(location.toString().includes("/Learning/TimeTable/TimeTable")){
+      
+      if(this.tryGetOption("customTT") == 'false')
+        return;
       
       $('#MainContent_hrefExport').prop('outerHTML', (`<br>${$('#MainContent_hrefExport').prop('outerHTML')}`));
       
@@ -228,10 +280,21 @@ class EiosCustomiser{
       let dt = new Date();
       let ms = dt.getMilliseconds();
           
-      let timetableURL = `https://raw.githubusercontent.com/relativemodder/eios-114b-grp-timetable/main/timetable.json?${ms}`;
+      //let timetableURL = `https://raw.githubusercontent.com/relativemodder/eios-114b-grp-timetable/main/timetable.json?${ms}`;
+      let timetableURL = this.tryGetOption("timetableURL");
       let tick = $("a", $(".active", $(".pagination")[0]))[0]["href"].split("?tick=")[1];
       
-      
+      if (timetableURL == "yet"){
+        let information = `
+        	<td style="width: 100%; height: 100%;" colspan="4">
+            	<center>URL вашего JSON-файла с расписанием не задан.<br>
+                Спросите URL у Вашего куратора или сисадмина, зайдите в настройки и задайте URL.<br><br>
+                <a href="javascript:void(0)" class="btn" onclick="eios.openModalAndScroll('#setCustomTimetableURL')">Перейти</a></center>
+            </td>
+        `;
+      	$("#custom-tt-body").append(information);
+        return;
+      }
       let allTimetable = loadJSON(timetableURL);
       console.log(allTimetable);
       let timetable = allTimetable[tick];
