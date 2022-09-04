@@ -75,6 +75,14 @@ function loadTextFileAjaxSync(filePath, mimeType)
   }
 }
 class EiosCustomiser{
+  
+  isMobile() {
+      if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            return true; 
+      }
+      return false;
+  }
+  
   urlify(text) {
       var urlRegex = /(https?:\/\/[^\s]+)/g;
       return text.replace(urlRegex, function(url) {
@@ -89,9 +97,16 @@ class EiosCustomiser{
     let dt = new Date();
     let ms = dt.getMilliseconds();
     let stylish = loadTextFileAjaxSync(`https://raw.githubusercontent.com/relativemodder/eios-mod/main/style.css?cache=${ms}`, "text/plain");
+    let mobilestyle = loadTextFileAjaxSync(`https://raw.githubusercontent.com/relativemodder/eios-mod/main/mobile-style.css?cache=${ms}`, "text/plain");
     $('body').append(`<style>
     ${stylish}
     </style>`);
+    
+    if(this.isMobile()){
+      $('body').append(`<style>
+        ${mobilestyle}
+        </style>`);
+    }
   }
   
   customise(){
@@ -261,7 +276,7 @@ class EiosCustomiser{
           <table class="table table-bordered table-striped tt-table">
                     <thead>
                         <tr>
-                            <th colspan="4" class="tt-h1 info">Кастомное расписание <mark>provided by EIOS mod</mark></th>
+                            <th colspan="4" class="tt-h1 info">Кастомное расписание <mark>(mod)</mark></th>
                         </tr>
                         <tr>
                             <th class="tt-h2"><span>Пара</span></th>
