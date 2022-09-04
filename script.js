@@ -243,7 +243,7 @@ class EiosCustomiser{
     let hiddenlis = JSON.parse(this.tryGetOption("hiddenlis"));
     console.log(hiddenlis);
     hiddenlis.forEach((elem, i, arr) => {
-      $($("nav").children().find('a').not('divider')[Number(elem)]).hide();
+      $($(this.isMobile() ? ".navbar-nav" : "nav").children().find('a').not('divider')[Number(elem)]).hide();
       $($("input").children().find('hiddens')[Number(elem)]).prop('checked', true);
     });
   }
