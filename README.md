@@ -1,5 +1,8 @@
 # eios-mod
 
+![image](https://user-images.githubusercontent.com/61388196/188303919-6463359d-f6fb-40fb-8180-e7d0887f4133.png)
+
+
 Модификация, разработанная специально для личного кабинета ЭИОС МГУ им. Огарёва.
 
 Понадобятся следующие расширения:
@@ -40,3 +43,9 @@
 6. Готово, расширение установлено. (Игнорируйте ошибки)
 
 Обратная связь: https://vk.com/relativemodder
+
+# Скриншоты
+![image](https://user-images.githubusercontent.com/61388196/188303934-3f45a04a-3b5d-4f71-8a75-a80aaa2d9d3f.png)
+![image](https://user-images.githubusercontent.com/61388196/188303950-829313ca-af17-43e3-a43c-f6ce8f57166c.png)
+![image](https://user-images.githubusercontent.com/61388196/188303952-f0e97307-8431-40dd-8cea-5e7c1bdc1a5b.png)
+
