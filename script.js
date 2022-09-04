@@ -235,7 +235,7 @@ class EiosCustomiser{
     
     let navbarclass = '.navmenu-nav';
     if (this.isMobile())
-      navbarclass = '.navbar-collapse';
+      navbarclass = '.navbar-nav';
     
     $(navbarclass).append(`<li role="separator" class="divider"></li>`);
     $(navbarclass).append(`<li><a href="javascript:void(0)" onclick="eios.openModal()">Настройки модификации</a></li>`);
