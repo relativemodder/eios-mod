@@ -232,8 +232,13 @@ class EiosCustomiser{
       $('#enableCustomTT').addClass("switch-on");
   }
   customiseLeftSide(){
-    $('.navmenu-nav').append(`<li role="separator" class="divider"></li>`);
-    $('.navmenu-nav').append(`<li><a href="javascript:void(0)" onclick="eios.openModal()">Настройки модификации</a></li>`);
+    
+    let navbarclass = '.navmenu-nav';
+    if (this.isMobile())
+      navbarclass = '.navbar-collapse';
+    
+    $(navbarclass).append(`<li role="separator" class="divider"></li>`);
+    $(navbarclass).append(`<li><a href="javascript:void(0)" onclick="eios.openModal()">Настройки модификации</a></li>`);
     
     let hiddenlis = JSON.parse(this.tryGetOption("hiddenlis"));
     console.log(hiddenlis);
