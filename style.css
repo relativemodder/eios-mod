@@ -4,6 +4,10 @@
   background-color: red;
 }
 
+.col-sm-9{
+  background: none;
+}
+
 body{
   font-family: Montserrat;
 }
